@@ -46,7 +46,10 @@
         <section id="dashboard-view" class="view">
             <header class="app-header">
                 <h2>Pacientes</h2>
-                <button id="btn-logout" class="btn-icon" title="Cerrar Sesión">Logout</button>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="window.changePin()" class="btn-icon" title="Cambiar PIN">🔑 PIN</button>
+                    <button id="btn-logout" class="btn-icon" title="Cerrar Sesión">Salir</button>
+                </div>
             </header>
             <main class="dashboard-content">
                 <div class="add-patient-box glass-card">
