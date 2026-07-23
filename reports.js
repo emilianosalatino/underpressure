@@ -5,7 +5,7 @@ let chartInstance = null;
 window.loadReports = function () {
     if (!APP_STATE.currentPatient) return;
 
-    const patients = JSON.parse(localStorage.getItem('underPressurePatients')) || {};
+    const patients = JSON.parse(localStorage.getItem(`underPressurePatients_${APP_STATE.currentUser}`)) || {};
     const data = patients[APP_STATE.currentPatient] || [];
 
     const statsSys = document.getElementById('avg-sys');
@@ -103,7 +103,7 @@ window.loadReports = function () {
 // CSV Export
 document.getElementById('btn-export-csv').addEventListener('click', () => {
     if (!APP_STATE.currentPatient) return;
-    const patients = JSON.parse(localStorage.getItem('underPressurePatients')) || {};
+    const patients = JSON.parse(localStorage.getItem(`underPressurePatients_${APP_STATE.currentUser}`)) || {};
     const data = patients[APP_STATE.currentPatient] || [];
 
     if (data.length === 0) {

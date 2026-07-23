@@ -1,12 +1,12 @@
 // patients.js - Lógica para manejar pacientes
 
 function getPatients() {
-    const raw = localStorage.getItem('underPressurePatients');
+    const raw = localStorage.getItem(`underPressurePatients_${APP_STATE.currentUser}`);
     return raw ? JSON.parse(raw) : {};
 }
 
 function savePatients(patients) {
-    localStorage.setItem('underPressurePatients', JSON.stringify(patients));
+    localStorage.setItem(`underPressurePatients_${APP_STATE.currentUser}`, JSON.stringify(patients));
 }
 
 window.loadPatients = function () {

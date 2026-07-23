@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const patients = JSON.parse(localStorage.getItem('underPressurePatients')) || {};
+        const patients = JSON.parse(localStorage.getItem(`underPressurePatients_${APP_STATE.currentUser}`)) || {};
         const pData = patients[APP_STATE.currentPatient] || [];
         pData.push(reading);
 
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         pData.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
         patients[APP_STATE.currentPatient] = pData;
-        localStorage.setItem('underPressurePatients', JSON.stringify(patients));
+        localStorage.setItem(`underPressurePatients_${APP_STATE.currentUser}`, JSON.stringify(patients));
 
         alert('Medición Guardada Exitosamente');
 
