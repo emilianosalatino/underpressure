@@ -31,14 +31,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const username = document.getElementById('nurse-username').value.trim();
         const pin = document.getElementById('nurse-pin').value.trim();
 
-        if (username && pin) {
+        if (!username || !pin) {
+            alert('Por favor inserta tu usuario y PIN.');
+            return;
+        }
+
+        if (pin === '1234') {
             // Un login simulado, se guarda en localStorage
             localStorage.setItem('underPressureUser', username);
             APP_STATE.currentUser = username;
             switchView('dashboard-view');
             if (window.loadPatients) window.loadPatients();
         } else {
-            alert('Por favor inserta un usuario y PIN válidos.');
+            alert('PIN incorrecto. El PIN temporal es: 1234');
         }
     });
 
