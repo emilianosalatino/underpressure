@@ -1,10 +1,6 @@
-// main.js - Lógica Principal (Cámara, Tesseract OCR, Guardado, Tabs)
+// main.js - Lógica Principal (Guardado, Tabs)
 
 document.addEventListener('DOMContentLoaded', () => {
-    const cameraInput = document.getElementById('camera-input');
-    const imagePreview = document.getElementById('image-preview');
-    const ocrStatus = document.getElementById('ocr-status');
-
     // UI de Resultados
     const sysInput = document.getElementById('sys-val');
     const diaInput = document.getElementById('dia-val');
