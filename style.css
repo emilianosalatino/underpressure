@@ -1,0 +1,301 @@
+/* Modern Medical UI with Glassmorphism */
+:root {
+    --primary-color: #0b7285;
+    --primary-light: #3bc9db;
+    --secondary-color: #f03e3e; /* For alerts */
+    --bg-gradient-start: #e3fafc;
+    --bg-gradient-end: #f8f9fa;
+    --card-bg: rgba(255, 255, 255, 0.7);
+    --text-main: #343a40;
+    --text-muted: #868e96;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+}
+
+#app-container {
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+}
+
+.view {
+    display: none;
+    animation: fadeIn 0.4s ease;
+}
+
+.view.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Glassmorphism Card */
+.glass-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+    border-radius: 20px;
+    padding: 30px 20px;
+}
+
+/* Login specific */
+.login-card {
+    text-align: center;
+    margin-top: 10vh;
+}
+
+.logo h1 {
+    color: var(--primary-color);
+    font-size: 2.5rem;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    margin-bottom: 30px;
+}
+
+/* Forms */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.flex-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flex-row label {
+    flex: 1;
+    font-weight: 500;
+}
+
+.flex-row input {
+    flex: 1.5;
+}
+
+input[type="text"], 
+input[type="password"],
+input[type="number"],
+input[type="datetime-local"] {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+    background: rgba(255, 255, 255, 0.9);
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: box-shadow 0.2s;
+}
+
+input:focus {
+    box-shadow: 0 0 0 3px rgba(11, 114, 133, 0.2);
+    border-color: var(--primary-light);
+}
+
+/* Buttons */
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: transform 0.1s, background-color 0.2s;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    width: 100%;
+    padding: 14px;
+}
+
+.btn-primary:hover {
+    background-color: #08505e;
+}
+
+.btn-secondary {
+    background-color: #e9ecef;
+    color: var(--text-main);
+    padding: 12px;
+}
+
+.btn-success {
+    background-color: #20c997;
+    color: white;
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+}
+
+.btn-icon {
+    background: none;
+    color: var(--primary-color);
+    font-weight: bold;
+    padding: 5px;
+}
+
+/* Dashboard / Header */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+
+.app-header h2 {
+    color: var(--primary-color);
+}
+
+.add-patient-box {
+    margin-bottom: 30px;
+}
+
+.input-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.input-row button {
+    flex-shrink: 0;
+}
+
+.section-title {
+    margin-left: 10px;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+/* Patient List Grid */
+.patient-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+.patient-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.patient-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+}
+
+/* Tabs */
+.tab-navigation {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    flex: 1;
+    background: transparent;
+    color: var(--text-muted);
+    padding: 12px;
+    border-radius: 0;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--primary-color);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Camera Segment */
+.camera-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.camera-section .instruction {
+    margin-bottom: 15px;
+}
+
+.btn-large {
+    display: inline-block;
+}
+
+.status-msg {
+    margin-top: 15px;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+/* Stats */
+.report-stats {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.stat-box {
+    flex: 1;
+    background: rgba(255,255,255,0.8);
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.stat-box .stat-label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.stat-box .stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* High BP warning */
+.warning {
+    color: var(--secondary-color) !important;
+}

@@ -1,0 +1,16 @@
+{
+  "name": "UnderPressure",
+  "short_name": "UnderPressure",
+  "description": "App para gestión local de Presión Arterial",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#e3fafc",
+  "theme_color": "#0b7285",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iIzBiNzI4NSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkeT0iLjMzZW0iIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjUwcHgiIGZvbnQtZmFtaWx5PSJBcmlhbCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+VVA8L3RleHQ+PC9zdmc+",
+      "type": "image/svg+xml",
+      "sizes": "512x512"
+    }
+  ]
+}

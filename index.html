@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UnderPressure - Gestor de Presión Arterial</title>
+
+    <!-- Google Fonts for modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0b7285">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app-container">
+
+        <!-- 1. LOGIN VIEW -->
+        <section id="login-view" class="view active">
+            <div class="glass-card login-card">
+                <div class="logo">
+                    <div class="heart-pulse-icon"></div>
+                    <h1>UnderPressure</h1>
+                </div>
+                <p class="subtitle">Acceso de Personal</p>
+                <div class="form-group">
+                    <input type="text" id="nurse-username" placeholder="Nombre de Usuario / Enfermero"
+                        value="Enfermero_A" />
+                </div>
+                <div class="form-group">
+                    <input type="password" id="nurse-pin" placeholder="PIN de Acceso" value="1234" />
+                </div>
+                <button id="btn-login" class="btn-primary">Ingresar</button>
+            </div>
+        </section>
+
+
+        <!-- 2. DASHBOARD (PATIENT LIST) VIEW -->
+        <section id="dashboard-view" class="view">
+            <header class="app-header">
+                <h2>Pacientes</h2>
+                <button id="btn-logout" class="btn-icon" title="Cerrar Sesión">Logout</button>
+            </header>
+            <main class="dashboard-content">
+                <div class="add-patient-box glass-card">
+                    <h3>Registrar Nuevo Paciente</h3>
+                    <div class="input-row">
+                        <input type="text" id="new-patient-name" placeholder="Nombre del paciente" />
+                        <button id="btn-add-patient" class="btn-secondary">Añadir</button>
+                    </div>
+                </div>
+
+                <div class="storage-tools" style="margin-bottom: 20px; display:flex; gap:10px;">
+                    <button id="btn-export-json" class="btn-secondary" style="flex:1;">📥 Exportar Datos
+                        (Backup)</button>
+                    <label for="import-json" class="btn-secondary"
+                        style="flex:1; text-align:center; display:inline-block; margin-bottom:0;">📤 Importar Datos
+                        <input type="file" id="import-json" accept=".json" style="display:none;">
+                    </label>
+                </div>
+
+                <h3 class="section-title">Pacientes Registrados</h3>
+                <div id="patient-list" class="patient-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </main>
+        </section>
+
+
+        <!-- 3. MEASUREMENT & REPORTS VIEW (TABBED) -->
+        <section id="patient-detail-view" class="view">
+            <header class="app-header">
+                <button id="btn-back-dashboard" class="btn-icon">⬅ Atrás</button>
+                <h2 id="current-patient-name">Nombre Paciente</h2>
+            </header>
+
+            <div class="tab-navigation">
+                <button class="tab-btn active" data-target="tab-measure">Nueva Medición</button>
+                <button class="tab-btn" data-target="tab-history">Historial</button>
+                <button class="tab-btn" data-target="tab-reports">Reportes</button>
+            </div>
+
+            <main class="dashboard-content tab-content-container">
+
+                <!-- TAB 1: MEASURE -->
+                <div id="tab-measure" class="tab-content active glass-card">
+                    <div class="form-section">
+                        <h3>Registrar Lectura</h3>
+                        <div class="form-group flex-row">
+                            <label>Sistólica (SYS):</label>
+                            <input type="number" id="sys-val" pattern="\d*" placeholder="Ej. 120">
+                        </div>
+                        <div class="form-group flex-row">
+                            <label>Diastólica (DIA):</label>
+                            <input type="number" id="dia-val" pattern="\d*" placeholder="Ej. 80">
+                        </div>
+                        <div class="form-group flex-row">
+                            <label>Pulso (PULSE):</label>
+                            <input type="number" id="pulse-val" pattern="\d*" placeholder="Ej. 70">
+                        </div>
+                        <div class="form-group flex-row">
+                            <label>Fecha y Hora:</label>
+                            <input type="datetime-local" id="datetime-val">
+                        </div>
+                        <button id="btn-save-measurement" class="btn-success">Guardar Medición</button>
+                    </div>
+                </div>
+
+                <!-- TAB 2: HISTORY (DELETE MEASUREMENTS) -->
+                <div id="tab-history" class="tab-content glass-card">
+                    <h3>Registro Histórico</h3>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Pulsa la X para borrar un
+                        registro incorrecto.</p>
+                    <div id="history-list"
+                        style="display:flex; flex-direction:column; gap:10px; max-height: 400px; overflow-y:auto;">
+                        <!-- JS populated -->
+                    </div>
+                </div>
+
+                <!-- TAB 3: REPORTS -->
+                <div id="tab-reports" class="tab-content glass-card">
+                    <h3>Comportamiento Semanal</h3>
+                    <div class="chart-container" style="position: relative; height:300px; width:100%">
+                        <canvas id="bp-chart"></canvas>
+                    </div>
+
+                    <div class="report-stats">
+                        <div class="stat-box">
+                            <span class="stat-label">Promedio SYS</span>
+                            <span class="stat-value" id="avg-sys">--</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Promedio DIA</span>
+                            <span class="stat-value" id="avg-dia">--</span>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons" style="margin-top: 20px;">
+                        <button id="btn-export-csv" class="btn-secondary">Exportar CSV</button>
+                    </div>
+                </div>
+
+            </main>
+        </section>
+
+    </div>
+
+    <!-- Chart.js for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Application Logic -->
+    <script src="auth.js"></script>
+    <script src="patients.js"></script>
+    <script src="reports.js"></script>
+    <script src="main.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(reg => {
+                    console.log('Service Worker registered', reg);
+                }).catch(err => {
+                    console.warn('Service Worker failed', err);
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>
