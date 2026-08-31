@@ -86,13 +86,16 @@ window.renderHistory = function () {
     if (!APP_STATE.currentPatient) return;
 
     const patients = getPatients();
-    const data = patients[APP_STATE.currentPatient] || [];
+    const allData = patients[APP_STATE.currentPatient] || [];
+    const data = window.getPeriodFilteredData(allData);
 
     // Reverse simple local sort so newest are on top
     const dataReversed = [...data].reverse();
 
     if (dataReversed.length === 0) {
-        historyList.innerHTML = '<p style="color:#888;">No hay registros.</p>';
+        historyList.innerHTML = allData.length === 0
+            ? '<p style="color:#888;">No hay registros.</p>'
+            : '<p style="color:#888;">No hay registros en este periodo.</p>';
         return;
     }
 
@@ -113,10 +116,11 @@ window.renderHistory = function () {
 
         item.querySelector('button').addEventListener('click', () => {
             if (confirm('¿Borrar esta medición?')) {
-                // Find original index in non-reversed array
-                const originalIndex = data.length - 1 - index;
-                data.splice(originalIndex, 1);
-                patients[APP_STATE.currentPatient] = data;
+                // `reading` is the same object reference as in allData (filtering doesn't clone),
+                // so locate it there directly instead of indexing into the filtered subset.
+                const originalIndex = allData.indexOf(reading);
+                if (originalIndex > -1) allData.splice(originalIndex, 1);
+                patients[APP_STATE.currentPatient] = allData;
                 savePatients(patients);
                 window.renderHistory();
             }

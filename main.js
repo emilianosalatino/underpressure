@@ -1,5 +1,46 @@
 // main.js - Lógica Principal (Guardado, Tabs)
 
+// --- Filtro de periodo compartido entre Historial y Reportes ---
+window.getPeriodFilteredData = function (data) {
+    const sorted = [...data].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    const sel = document.getElementById('period-select').value;
+
+    if (sel === 'all') return sorted;
+
+    if (sel === 'custom') {
+        const from = document.getElementById('period-from').value;
+        const to = document.getElementById('period-to').value;
+        return sorted.filter(r => {
+            const d = String(r.timestamp).slice(0, 10);
+            return (!from || d >= from) && (!to || d <= to);
+        });
+    }
+
+    const days = parseInt(sel, 10);
+    const cutoff = new Date();
+    cutoff.setHours(0, 0, 0, 0);
+    cutoff.setDate(cutoff.getDate() - days);
+    return sorted.filter(r => new Date(r.timestamp) >= cutoff);
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    const periodSelect = document.getElementById('period-select');
+    const periodCustomRow = document.getElementById('period-custom-row');
+
+    function refreshActiveTab() {
+        if (window.loadReports) window.loadReports();
+        if (window.renderHistory) window.renderHistory();
+    }
+
+    periodSelect.addEventListener('change', () => {
+        const isCustom = periodSelect.value === 'custom';
+        periodCustomRow.classList.toggle('hidden', !isCustom);
+        if (!isCustom) refreshActiveTab();
+    });
+    document.getElementById('period-from').addEventListener('change', refreshActiveTab);
+    document.getElementById('period-to').addEventListener('change', refreshActiveTab);
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     // UI de Resultados
     const sysInput = document.getElementById('sys-val');
@@ -8,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const datetimeInput = document.getElementById('datetime-val');
 
     // Tab Navigation Logic
+    const periodBar = document.getElementById('period-bar');
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             // Remove active classes
@@ -18,6 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
             e.target.classList.add('active');
             const targetId = e.target.getAttribute('data-target');
             document.getElementById(targetId).classList.add('active');
+
+            // Period filter only makes sense for history/reports
+            periodBar.classList.toggle('hidden', targetId === 'tab-measure');
 
             if (targetId === 'tab-reports' && window.loadReports) {
                 window.loadReports();
