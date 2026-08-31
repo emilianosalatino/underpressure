@@ -90,6 +90,21 @@
                 <button class="tab-btn" data-target="tab-reports">Reportes</button>
             </div>
 
+            <div id="period-bar" class="period-bar glass-card hidden">
+                <select id="period-select">
+                    <option value="7">1 semana</option>
+                    <option value="14">2 semanas</option>
+                    <option value="30" selected>1 mes</option>
+                    <option value="custom">Intervalo...</option>
+                    <option value="all">Todo</option>
+                </select>
+                <div id="period-custom-row" class="period-custom-row hidden">
+                    <input type="date" id="period-from">
+                    <span class="period-to-sep">a</span>
+                    <input type="date" id="period-to">
+                </div>
+            </div>
+
             <main class="dashboard-content tab-content-container">
 
                 <!-- TAB 1: MEASURE -->

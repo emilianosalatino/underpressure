@@ -6,7 +6,8 @@ window.loadReports = function () {
     if (!APP_STATE.currentPatient) return;
 
     const patients = JSON.parse(localStorage.getItem(`underPressurePatients_${APP_STATE.currentUser}`)) || {};
-    const data = patients[APP_STATE.currentPatient] || [];
+    const allData = patients[APP_STATE.currentPatient] || [];
+    const data = window.getPeriodFilteredData(allData);
 
     const statsSys = document.getElementById('avg-sys');
     const statsDia = document.getElementById('avg-dia');
@@ -104,10 +105,11 @@ window.loadReports = function () {
 document.getElementById('btn-export-csv').addEventListener('click', () => {
     if (!APP_STATE.currentPatient) return;
     const patients = JSON.parse(localStorage.getItem(`underPressurePatients_${APP_STATE.currentUser}`)) || {};
-    const data = patients[APP_STATE.currentPatient] || [];
+    const allData = patients[APP_STATE.currentPatient] || [];
+    const data = window.getPeriodFilteredData(allData);
 
     if (data.length === 0) {
-        alert("No hay datos para exportar");
+        alert("No hay datos en este periodo para exportar");
         return;
     }
 
