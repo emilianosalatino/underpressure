@@ -1,179 +1,158 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UnderPressure - Gestor de Presión Arterial</title>
-
-    <!-- Google Fonts for modern typography -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0b7285">
-
-    <!-- Styles -->
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#003C52">
+<title>Bitácora de Presión</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-    <div id="app-container">
 
-        <!-- 1. LOGIN VIEW -->
-        <section id="login-view" class="view active">
-            <div class="glass-card login-card">
-                <div class="logo">
-                    <div class="heart-pulse-icon"></div>
-                    <h1>UnderPressure</h1>
-                </div>
-                <p class="subtitle">Acceso de Personal</p>
-                <div class="form-group">
-                    <input type="text" id="nurse-username" placeholder="Nombre de Usuario / Enfermero"
-                        value="Enfermero_A" />
-                </div>
-                <div class="form-group">
-                    <input type="password" id="nurse-pin" placeholder="PIN de Acceso" value="1234" />
-                </div>
-                <button id="btn-login" class="btn-primary">Ingresar</button>
-            </div>
-        </section>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="brand-pulse" aria-hidden="true">
+        <svg viewBox="0 0 100 30" width="34" height="14"><polyline points="0,15 22,15 28,4 34,26 40,15 100,15" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <div>
+        <div class="brand-title">Bitácora de Presión</div>
+        <div class="brand-sub" id="rangeSub">&nbsp;</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <label class="icon-btn" title="Restaurar respaldo" aria-label="Restaurar respaldo">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V9"/><path d="M7 14l5-5 5 5"/><path d="M5 3h14"/></svg>
+        <input type="file" id="importInput" accept="application/json" hidden>
+      </label>
+      <button id="backupBtn" class="icon-btn" title="Guardar respaldo (.json)" aria-label="Guardar respaldo">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M17 10l-5 5-5-5"/><path d="M5 21h14"/></svg>
+      </button>
+      <button id="exportBtn" class="icon-btn" title="Exportar PDF" aria-label="Exportar PDF">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
 
+<main id="view-log" class="view active">
+  <section class="chart-card">
+    <div class="chart-card-head">
+      <h2>Comportamiento</h2>
+      <select id="rangeSelect" class="range-select">
+        <option value="7">1 semana</option>
+        <option value="14">2 semanas</option>
+        <option value="30" selected>1 mes</option>
+        <option value="custom">Intervalo...</option>
+        <option value="all">Todo</option>
+      </select>
+    </div>
+    <div id="customRangeRow" class="datetime-row hidden">
+      <label class="field">
+        <span>Desde</span>
+        <input type="date" id="rangeFrom">
+      </label>
+      <label class="field">
+        <span>Hasta</span>
+        <input type="date" id="rangeTo">
+      </label>
+    </div>
+    <div class="chart-wrap"><canvas id="trendChart" height="180"></canvas></div>
+    <div class="legend-row">
+      <span><i class="dot dot-sys"></i>Sistólica</span>
+      <span><i class="dot dot-dia"></i>Diastólica</span>
+      <span><i class="dot dot-pulse"></i>Pulso</span>
+    </div>
+  </section>
 
-        <!-- 2. DASHBOARD (PATIENT LIST) VIEW -->
-        <section id="dashboard-view" class="view">
-            <header class="app-header">
-                <h2>Pacientes</h2>
-                <div style="display:flex; gap:10px;">
-                    <button onclick="window.changePin()" class="btn-icon" title="Cambiar PIN">🔑 PIN</button>
-                    <button id="btn-logout" class="btn-icon" title="Cerrar Sesión">Salir</button>
-                </div>
-            </header>
-            <main class="dashboard-content">
-                <div class="add-patient-box glass-card">
-                    <h3>Registrar Nuevo Paciente</h3>
-                    <div class="input-row">
-                        <input type="text" id="new-patient-name" placeholder="Nombre del paciente" />
-                        <button id="btn-add-patient" class="btn-secondary">Añadir</button>
-                    </div>
-                </div>
+  <section class="log-section">
+    <div class="log-head">
+      <h2>Registros</h2>
+      <span id="countBadge" class="count-badge">0</span>
+    </div>
+    <div id="emptyState" class="empty-state hidden">
+      <p>Aún no hay registros.</p>
+      <p class="empty-sub">Toca "Registrar" para capturar tu primera lectura.</p>
+    </div>
+    <ul id="logList" class="log-list"></ul>
+  </section>
+</main>
 
-                <div class="storage-tools" style="margin-bottom: 20px; display:flex; gap:10px;">
-                    <button id="btn-export-json" class="btn-secondary" style="flex:1;">📥 Exportar Datos
-                        (Backup)</button>
-                    <label for="import-json" class="btn-secondary"
-                        style="flex:1; text-align:center; display:inline-block; margin-bottom:0;">📤 Importar Datos
-                        <input type="file" id="import-json" accept=".json" style="display:none;">
-                    </label>
-                </div>
-
-                <h3 class="section-title">Pacientes Registrados</h3>
-                <div id="patient-list" class="patient-grid">
-                    <!-- Populated by JS -->
-                </div>
-            </main>
-        </section>
-
-
-        <!-- 3. MEASUREMENT & REPORTS VIEW (TABBED) -->
-        <section id="patient-detail-view" class="view">
-            <header class="app-header">
-                <button id="btn-back-dashboard" class="btn-icon">⬅ Atrás</button>
-                <h2 id="current-patient-name">Nombre Paciente</h2>
-            </header>
-
-            <div class="tab-navigation">
-                <button class="tab-btn active" data-target="tab-measure">Nueva Medición</button>
-                <button class="tab-btn" data-target="tab-history">Historial</button>
-                <button class="tab-btn" data-target="tab-reports">Reportes</button>
-            </div>
-
-            <main class="dashboard-content tab-content-container">
-
-                <!-- TAB 1: MEASURE -->
-                <div id="tab-measure" class="tab-content active glass-card">
-                    <div class="form-section">
-                        <h3>Registrar Lectura</h3>
-                        <div class="form-group flex-row">
-                            <label>Sistólica (SYS):</label>
-                            <input type="number" id="sys-val" pattern="\d*" placeholder="Ej. 120">
-                        </div>
-                        <div class="form-group flex-row">
-                            <label>Diastólica (DIA):</label>
-                            <input type="number" id="dia-val" pattern="\d*" placeholder="Ej. 80">
-                        </div>
-                        <div class="form-group flex-row">
-                            <label>Pulso (PULSE):</label>
-                            <input type="number" id="pulse-val" pattern="\d*" placeholder="Ej. 70">
-                        </div>
-                        <div class="form-group flex-row">
-                            <label>Fecha y Hora:</label>
-                            <input type="datetime-local" id="datetime-val">
-                        </div>
-                        <button id="btn-save-measurement" class="btn-success">Guardar Medición</button>
-                    </div>
-                </div>
-
-                <!-- TAB 2: HISTORY (DELETE MEASUREMENTS) -->
-                <div id="tab-history" class="tab-content glass-card">
-                    <h3>Registro Histórico</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Pulsa la X para borrar un
-                        registro incorrecto.</p>
-                    <div id="history-list"
-                        style="display:flex; flex-direction:column; gap:10px; max-height: 400px; overflow-y:auto;">
-                        <!-- JS populated -->
-                    </div>
-                </div>
-
-                <!-- TAB 3: REPORTS -->
-                <div id="tab-reports" class="tab-content glass-card">
-                    <h3>Comportamiento Semanal</h3>
-                    <div class="chart-container" style="position: relative; height:300px; width:100%">
-                        <canvas id="bp-chart"></canvas>
-                    </div>
-
-                    <div class="report-stats">
-                        <div class="stat-box">
-                            <span class="stat-label">Promedio SYS</span>
-                            <span class="stat-value" id="avg-sys">--</span>
-                        </div>
-                        <div class="stat-box">
-                            <span class="stat-label">Promedio DIA</span>
-                            <span class="stat-value" id="avg-dia">--</span>
-                        </div>
-                    </div>
-
-                    <div class="action-buttons" style="margin-top: 20px;">
-                        <button id="btn-export-csv" class="btn-secondary">Exportar CSV</button>
-                    </div>
-                </div>
-
-            </main>
-        </section>
-
+<main id="view-add" class="view">
+  <section class="capture-card">
+    <div class="lcd-panel" id="lcdPanel">
+      <div class="lcd-row">
+        <div class="lcd-label">SYS<span>mmHg</span></div>
+        <div class="lcd-digits" id="digSys">--</div>
+      </div>
+      <div class="lcd-row">
+        <div class="lcd-label">DIA<span>mmHg</span></div>
+        <div class="lcd-digits" id="digDia">--</div>
+      </div>
+      <div class="lcd-row">
+        <div class="lcd-label">PULSE<span>/min</span></div>
+        <div class="lcd-digits" id="digPulse">--</div>
+      </div>
     </div>
 
-    <!-- Chart.js for graphs -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <div class="manual-grid">
+      <label class="field">
+        <span>Sistólica (SYS)</span>
+        <input type="number" id="inputSys" inputmode="numeric" placeholder="—" min="50" max="260">
+      </label>
+      <label class="field">
+        <span>Diastólica (DIA)</span>
+        <input type="number" id="inputDia" inputmode="numeric" placeholder="—" min="30" max="200">
+      </label>
+      <label class="field">
+        <span>Pulso</span>
+        <input type="number" id="inputPulse" inputmode="numeric" placeholder="—" min="30" max="220">
+      </label>
+    </div>
 
-    <!-- Application Logic -->
-    <script src="auth.js"></script>
-    <script src="patients.js"></script>
-    <script src="reports.js"></script>
-    <script src="main.js"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').then(reg => {
-                    console.log('Service Worker registered', reg);
-                }).catch(err => {
-                    console.warn('Service Worker failed', err);
-                });
-            });
-        }
-    </script>
+    <div class="datetime-row">
+      <label class="field">
+        <span>Fecha</span>
+        <input type="date" id="inputDate">
+      </label>
+      <label class="field">
+        <span>Hora</span>
+        <input type="time" id="inputTime">
+      </label>
+    </div>
+
+    <label class="field notes-field">
+      <span>Notas (opcional)</span>
+      <input type="text" id="inputNotes" placeholder="Ej. antes de comer, brazo izquierdo...">
+    </label>
+
+    <div id="catBanner" class="cat-banner hidden"></div>
+
+    <button id="saveBtn" class="save-btn">Guardar registro</button>
+  </section>
+</main>
+
+
+<nav class="tabbar">
+  <button class="tab-btn active" data-view="view-log">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+    <span>Bitácora</span>
+  </button>
+  <button class="tab-btn" data-view="view-add">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+    <span>Registrar</span>
+  </button>
+</nav>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="assets/lib/chart.umd.min.js"></script>
+<script src="assets/lib/jspdf.umd.min.js"></script>
+<script src="app.js"></script>
 </body>
-
 </html>

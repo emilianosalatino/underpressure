@@ -1,16 +1,17 @@
 {
-  "name": "UnderPressure",
-  "short_name": "UnderPressure",
-  "description": "App para gestión local de Presión Arterial",
+  "name": "Bitácora de Presión",
+  "short_name": "Bitácora BP",
+  "description": "Registro local de presión arterial y pulso, con foto, gráfica y exportación a PDF.",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#e3fafc",
-  "theme_color": "#0b7285",
+  "orientation": "portrait",
+  "background_color": "#F3F6F5",
+  "theme_color": "#003C52",
+  "lang": "es-MX",
   "icons": [
-    {
-      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iIzBiNzI4NSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkeT0iLjMzZW0iIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjUwcHgiIGZvbnQtZmFtaWx5PSJBcmlhbCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+VVA8L3RleHQ+PC9zdmc+",
-      "type": "image/svg+xml",
-      "sizes": "512x512"
-    }
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
